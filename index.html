@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ricevuta Locazione Breve – DE FILIPPO GRAZIA</title>
+<style>
+  :root {
+    --testo:    #1a1a1a;
+    --testo2:   #555555;
+    --bordo:    #d0d0d0;
+    --accent:   #222222;
+    --bg:       #fafafa;
+    --card:     #ffffff;
+    --locked:   #f5f5f5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--testo);
+    min-height: 100vh;
+    padding: 24px 16px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  /* BARRA LINGUA */
+  .lang-bar {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    max-width: 820px;
+    margin: 0 auto 16px;
+  }
+  .lang-btn {
+    padding: 5px 12px;
+    border-radius: 3px;
+    border: 1px solid var(--bordo);
+    background: var(--card);
+    color: var(--testo2);
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .lang-btn.attivo { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* RICEVUTA */
+  .ricevuta {
+    background: var(--card);
+    max-width: 820px;
+    margin: 0 auto;
+    border: 1px solid var(--bordo);
+  }
+
+  /* INTESTAZIONE */
+  .intestazione {
+    border-bottom: 1px solid var(--bordo);
+    padding: 24px 28px;
+    text-align: center;
+  }
+  .intestazione h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--testo);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .intestazione .sottotitolo {
+    font-size: 0.82rem;
+    color: var(--testo2);
+  }
+
+  /* RIGA N. RICEVUTA */
+  .riga-num {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--bordo);
+    flex-wrap: wrap;
+  }
+  .riga-num .etichetta { font-size: 0.88rem; color: var(--testo2); white-space: nowrap; }
+  .riga-num input[type="text"] {
+    width: 130px; padding: 5px 8px;
+    border: 1px solid var(--bordo); border-radius: 2px;
+    background: #fff; font-size: 0.88rem; color: var(--testo);
+  }
+  .pf-group { display: flex; align-items: center; gap: 14px; margin-left: auto; flex-wrap: wrap; }
+  .pf-label { font-size: 0.88rem; color: var(--testo2); }
+  .radio-item { display: flex; align-items: center; gap: 5px; font-size: 0.88rem; color: var(--testo2); cursor: pointer; }
+  .radio-item input[type="radio"] { accent-color: var(--accent); cursor: pointer; }
+  .data-group { display: flex; align-items: center; gap: 8px; }
+  .data-group input[type="date"] {
+    padding: 5px 8px; border: 1px solid var(--bordo); border-radius: 2px;
+    background: #fff; font-size: 0.88rem; color: var(--testo);
+  }
+
+  /* SEZIONI */
+  .sezione { padding: 18px 28px; border-bottom: 1px solid var(--bordo); }
+  .sezione:last-of-type { border-bottom: none; }
+  .sezione-titolo {
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--testo2);
+    margin-bottom: 12px;
+  }
+
+  /* CAMPI */
+  .campo-group { display: flex; flex-direction: column; gap: 10px; }
+  .campo-riga { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .campo-riga .etichetta {
+    min-width: 160px; font-size: 0.88rem;
+    color: var(--testo2); flex-shrink: 0;
+  }
+  .campo-riga .etichetta-inline { min-width: 0; }
+  .opt { font-size: 0.75rem; color: #888; }
+  .campo-riga input[type="text"],
+  .campo-riga input[type="date"],
+  .campo-riga input[type="number"],
+  .campo-riga textarea {
+    flex: 1; min-width: 180px; padding: 6px 10px;
+    border: 1px solid var(--bordo); border-radius: 2px;
+    background: #fff; font-size: 0.9rem; color: var(--testo);
+    font-family: inherit;
+  }
+  .campo-riga input:focus, .campo-riga textarea:focus { outline: none; border-color: var(--accent); }
+  .campo-riga input.locked {
+    background: var(--locked); color: var(--testo);
+    cursor: not-allowed;
+  }
+  .campo-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .campo-fullwidth { display: flex; flex-direction: column; gap: 6px; }
+  .campo-fullwidth textarea {
+    width: 100%; padding: 8px 10px;
+    border: 1px solid var(--bordo); border-radius: 2px;
+    background: #fff; font-size: 0.9rem; color: var(--testo);
+    font-family: inherit; resize: vertical;
+  }
+  .campo-fullwidth textarea:focus { outline: none; border-color: var(--accent); }
+
+  /* IMPORTI */
+  .importi-riga { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .importi-riga .etichetta { font-size: 0.95rem; font-weight: 600; color: var(--testo); }
+  .importo-box { display: flex; align-items: center; gap: 6px; }
+  .importo-box .euro { font-size: 1rem; font-weight: 600; color: var(--testo); }
+  .importo-box input {
+    width: 150px; padding: 7px 10px;
+    border: 1px solid var(--accent); border-radius: 2px;
+    background: #fff; font-size: 0.95rem; font-weight: 600; color: var(--testo);
+  }
+  .importo-box input:focus { outline: none; }
+  .acc-sal { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .check-item { display: flex; align-items: center; gap: 6px; font-size: 0.88rem; color: var(--testo2); cursor: pointer; }
+  .check-item input[type="checkbox"] { accent-color: var(--accent); cursor: pointer; }
+
+  /* PAGAMENTO */
+  .pag-riga { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+  .rif-label { font-size: 0.88rem; color: var(--testo2); display: block; margin-bottom: 6px; }
+  textarea.rif {
+    width: 100%; min-height: 60px; padding: 8px 10px;
+    border: 1px solid var(--bordo); border-radius: 2px;
+    background: #fff; font-size: 0.9rem; color: var(--testo);
+    resize: vertical; font-family: inherit;
+  }
+  textarea.rif:focus { outline: none; border-color: var(--accent); }
+
+  /* BOTTONI */
+  .btn-bar {
+    display: flex; gap: 10px; justify-content: center;
+    padding: 18px 28px; flex-wrap: wrap;
+    border-top: 1px solid var(--bordo);
+  }
+  .btn {
+    padding: 8px 22px; border-radius: 3px;
+    font-size: 0.9rem; font-weight: 500; cursor: pointer;
+    border: 1px solid var(--accent);
+  }
+  .btn-stampa { background: var(--accent); color: #fff; }
+  .btn-stampa:hover { background: #000; }
+  .btn-azzera { background: #fff; color: var(--testo); }
+  .btn-azzera:hover { background: var(--locked); }
+
+  @media (max-width: 560px) {
+    .campo-2col { grid-template-columns: 1fr; }
+    .campo-riga .etichetta { min-width: 130px; }
+    .riga-num { flex-direction: column; align-items: flex-start; }
+    .pf-group { margin-left: 0; }
+    .sezione { padding: 14px; }
+  }
+
+  /* DOCUMENTO STAMPA — nascosto a video, visibile in stampa */
+  .documento-stampa { display: none; }
+
+  /* STAMPA */
+  @page { size: A4; margin: 16mm 18mm; }
+  @media print {
+    html, body { background: #fff; padding: 0; margin: 0; color: #000; }
+    .lang-bar, .ricevuta, .btn-bar { display: none !important; }
+    .documento-stampa {
+      display: block;
+      font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
+      color: #000;
+      font-size: 10pt;
+      line-height: 1.45;
+    }
+    .doc-titolo {
+      text-align: center;
+      font-size: 16pt;
+      font-weight: 700;
+      letter-spacing: 2pt;
+      text-transform: uppercase;
+      margin-bottom: 3pt;
+    }
+    .doc-sottotitolo {
+      text-align: center;
+      font-size: 9pt;
+      color: #555;
+      margin-bottom: 14pt;
+    }
+    .doc-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9.5pt;
+      border-top: 0.5pt solid #888;
+      border-bottom: 0.5pt solid #888;
+      padding: 6pt 0;
+      margin-bottom: 14pt;
+    }
+    .doc-meta strong { font-weight: 600; }
+    .doc-sezione { margin-bottom: 12pt; page-break-inside: avoid; }
+    .doc-sezione h2 {
+      font-size: 8.5pt;
+      font-weight: 600;
+      letter-spacing: 1.2pt;
+      text-transform: uppercase;
+      color: #555;
+      border-bottom: 0.4pt solid #bbb;
+      padding-bottom: 2pt;
+      margin-bottom: 6pt;
+    }
+    .doc-riga {
+      display: flex;
+      font-size: 10pt;
+      margin-bottom: 3pt;
+      page-break-inside: avoid;
+    }
+    .doc-label {
+      width: 140pt;
+      color: #666;
+      flex-shrink: 0;
+      padding-right: 10pt;
+    }
+    .doc-valore { flex: 1; color: #000; word-break: break-word; }
+    .doc-totale {
+      margin: 18pt 0 14pt;
+      padding: 10pt 4pt;
+      border-top: 1.2pt solid #000;
+      border-bottom: 1.2pt solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13pt;
+      font-weight: 700;
+      letter-spacing: 0.5pt;
+      page-break-inside: avoid;
+    }
+    .doc-totale .doc-importo { font-size: 14pt; }
+    .doc-pag {
+      font-size: 10pt;
+      margin-bottom: 5pt;
+      display: flex;
+    }
+    .doc-pag .doc-label { width: 140pt; color: #666; }
+    .doc-pag .doc-valore { flex: 1; color: #000; }
+    .doc-footer {
+      margin-top: 22pt;
+      padding-top: 8pt;
+      border-top: 0.4pt solid #ccc;
+      text-align: center;
+      font-size: 8pt;
+      color: #777;
+      font-style: italic;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- BARRA LINGUA -->
+<div class="lang-bar">
+  <button class="lang-btn attivo" id="btnIt" onclick="setLang('it')">Italiano</button>
+  <button class="lang-btn" id="btnEn" onclick="setLang('en')">English</button>
+  <button class="lang-btn" id="btnFr" onclick="setLang('fr')">Français</button>
+</div>
+
+<div class="ricevuta">
+
+  <!-- INTESTAZIONE -->
+  <div class="intestazione">
+    <h1 id="t-titolo">RICEVUTA LOCAZIONE BREVE</h1>
+    <div class="sottotitolo" id="t-sottotitolo">Art. 4 D.L. 50/2017 – Locazioni brevi a fini turistici</div>
+  </div>
+
+  <!-- RIGA N. RICEVUTA -->
+  <div class="riga-num">
+    <span class="etichetta" id="t-nric">N. Ricevuta:</span>
+    <input type="text" id="nRicevuta" maxlength="30">
+    <div class="pf-group">
+      <span class="pf-label" id="t-proforma">Pro forma:</span>
+      <label class="radio-item">
+        <input type="radio" name="proforma" id="pfSi" value="si">
+        <span id="t-pfSi">Sì</span>
+      </label>
+      <label class="radio-item">
+        <input type="radio" name="proforma" id="pfNo" value="no" checked>
+        <span id="t-pfNo">No</span>
+      </label>
+      <div class="data-group">
+        <span class="etichetta" id="t-dataem">Data emissione:</span>
+        <input type="date" id="dataEmissione">
+      </div>
+    </div>
+  </div>
+
+  <!-- LOCATORE -->
+  <div class="sezione">
+    <div class="sezione-titolo" id="t-secLoc">DATI DEL LOCATORE (Proprietario)</div>
+    <div class="campo-group">
+      <div class="campo-riga">
+        <span class="etichetta" id="t-nc1">Nome e Cognome:</span>
+        <input type="text" class="locked" readonly value="DE FILIPPO GRAZIA">
+      </div>
+      <div class="campo-riga">
+        <span class="etichetta" id="t-cf1">Codice Fiscale:</span>
+        <input type="text" class="locked" readonly value="DFLGRZ47P70F158H">
+      </div>
+      <div class="campo-riga">
+        <span class="etichetta" id="t-ind1">Indirizzo:</span>
+        <input type="text" class="locked" readonly value="Piazza Nastasi n. 34 – 98057 Milazzo (ME) Italia">
+      </div>
+    </div>
+  </div>
+
+  <!-- CONDUTTORE -->
+  <div class="sezione">
+    <div class="sezione-titolo" id="t-secCond">DATI DEL CONDUTTORE (Ospite)</div>
+    <div class="campo-group">
+      <div class="campo-riga">
+        <span class="etichetta" id="t-nc2">Nome e Cognome:</span>
+        <input type="text" id="condNome">
+      </div>
+      <div class="campo-riga">
+        <span class="etichetta" id="t-indres">Indirizzo residenza:</span>
+        <textarea id="condIndirizzo" rows="2"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMMOBILE -->
+  <div class="sezione">
+    <div class="sezione-titolo" id="t-secImm">DATI DELL'IMMOBILE</div>
+    <div class="campo-group">
+      <div class="campo-riga">
+        <span class="etichetta" id="t-indimm">Indirizzo immobile:</span>
+        <input type="text" class="locked" readonly value="Via Cristoforo Colombo n. 7 – 98057 Milazzo (ME) Italia">
+      </div>
+      <div class="campo-2col">
+        <div class="campo-riga">
+          <span class="etichetta" id="t-comune">Comune:</span>
+          <input type="text" class="locked" readonly value="Milazzo">
+        </div>
+        <div class="campo-riga">
+          <input type="text" class="locked" readonly value="ME" style="flex:0 0 55px; min-width:0; width:55px; max-width:55px; text-align:center;">
+          <input type="text" class="locked" readonly value="98057" style="flex:0 0 75px; min-width:0; width:75px; max-width:75px; text-align:center; margin-left:10px;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOGGIORNO -->
+  <div class="sezione">
+    <div class="sezione-titolo" id="t-secSog">DETTAGLI SOGGIORNO</div>
+    <div class="campo-group">
+      <div class="campo-riga">
+        <span class="etichetta" id="t-datapren">Data prenotazione:</span>
+        <input type="date" id="dataPrenotazione">
+      </div>
+      <div class="campo-2col">
+        <div class="campo-riga">
+          <span class="etichetta" id="t-dataarr">Data arrivo:</span>
+          <input type="date" id="dataArrivo" onchange="calcolaNotti()">
+        </div>
+        <div class="campo-riga">
+          <span class="etichetta" id="t-datapart">Data partenza:</span>
+          <input type="date" id="dataPartenza" onchange="calcolaNotti()">
+        </div>
+      </div>
+      <div class="campo-riga">
+        <span class="etichetta" id="t-notti">Pernottamenti:</span>
+        <input type="text" id="notti" class="locked" readonly style="flex:0 0 70px; min-width:0; width:70px; max-width:70px; text-align:center;">
+      </div>
+      <div class="campo-fullwidth">
+        <span class="rif-label" id="t-noteLabel">Note:</span>
+        <textarea id="noteSoggiorno" rows="2"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPORTI -->
+  <div class="sezione">
+    <div class="sezione-titolo" id="t-secImp">DETTAGLIO IMPORTI</div>
+    <div class="importi-riga">
+      <span class="etichetta" id="t-totale">TOTALE RICEVUTO:</span>
+      <div class="importo-box">
+        <span class="euro">€</span>
+        <input type="text" id="totale" placeholder="0,00">
+      </div>
+      <div class="acc-sal">
+        <label class="check-item">
+          <input type="checkbox" id="chkAcconto">
+          <span id="t-acconto">Acconto</span>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" id="chkSaldo">
+          <span id="t-saldo">Saldo</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGAMENTO -->
+  <div class="sezione">
+    <div class="sezione-titolo" id="t-secPag">MODALITÀ DI PAGAMENTO</div>
+    <div class="pag-riga">
+      <label class="check-item">
+        <input type="checkbox" id="chkContanti">
+        <span id="t-contanti">Contanti</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" id="chkBonifico">
+        <span id="t-bonifico">Bonifico</span>
+      </label>
+    </div>
+    <span class="rif-label" id="t-rifLabel">Note:</span>
+    <textarea class="rif" id="rifPagamento" rows="3"></textarea>
+  </div>
+
+  <!-- BOTTONI -->
+  <div class="btn-bar">
+    <button class="btn btn-stampa" onclick="popolaDocumentoStampa(); window.print();" id="t-stampa">Stampa / Salva PDF</button>
+    <button class="btn btn-stampa" onclick="inviaImmagineWA()" id="t-wa">📱 Invia immagine via WA</button>
+    <button class="btn btn-azzera" onclick="esportaJSON()" id="t-export">Esporta JSON</button>
+    <button class="btn btn-azzera" onclick="document.getElementById('importFile').click()" id="t-import">Importa JSON</button>
+    <button class="btn btn-azzera" onclick="azzeraForm()" id="t-azzera">Azzera campi</button>
+    <input type="file" id="importFile" accept=".json,application/json" style="display:none" onchange="importaJSON(event)">
+  </div>
+
+</div><!-- fine .ricevuta -->
+
+<!-- DOCUMENTO PER STAMPA / PDF (popolato dinamicamente prima della stampa) -->
+<div class="documento-stampa" id="documentoStampa"></div>
+
+<script>
+const TESTI = {
+  it: {
+    'titolo':    'RICEVUTA LOCAZIONE BREVE',
+    'sottotitolo': 'Art. 4 D.L. 50/2017 – Locazioni brevi a fini turistici',
+    'nric':      'N. Ricevuta:',
+    'proforma':  'Pro forma:',
+    'pfSi':      'Sì',
+    'pfNo':      'No',
+    'dataem':    'Data emissione:',
+    'secLoc':    'DATI DEL LOCATORE (Proprietario)',
+    'secCond':   'DATI DEL CONDUTTORE (Ospite)',
+    'secImm':    "DATI DELL'IMMOBILE",
+    'secSog':    'DETTAGLI SOGGIORNO',
+    'secImp':    'DETTAGLIO IMPORTI',
+    'secPag':    'MODALITÀ DI PAGAMENTO',
+    'nc1':       'Nome e Cognome:',
+    'cf1':       'Codice Fiscale:',
+    'ind1':      'Indirizzo:',
+    'nc2':       'Nome e Cognome:',
+    'cf2':       'Codice Fiscale:',
+    'opt':       '(facoltativo)',
+    'indres':    'Indirizzo residenza:',
+    'indimm':    'Indirizzo immobile:',
+    'comune':    'Comune:',
+    'prov':      'Prov:',
+    'cap':       'CAP:',
+    'datapren':  'Data prenotazione:',
+    'dataarr':   'Data arrivo:',
+    'datapart':  'Data partenza:',
+    'notti':     'Pernottamenti:',
+    'noteLabel': 'Note:',
+    'totale':    'TOTALE RICEVUTO:',
+    'acconto':   'Acconto',
+    'saldo':     'Saldo',
+    'contanti':  'Contanti',
+    'bonifico':  'Bonifico',
+    'rifLabel':  'Note:',
+    'stampa':    'Stampa / Salva PDF',
+    'wa':        '📱 Invia immagine via WA',
+    'export':    'Esporta JSON',
+    'import':    'Importa JSON',
+    'azzera':    'Azzera campi',
+  },
+  en: {
+    'titolo':    'SHORT-TERM RENTAL RECEIPT',
+    'sottotitolo': 'Art. 4 Italian Decree-Law 50/2017 – Short-term tourist rentals',
+    'nric':      'Receipt No.:',
+    'proforma':  'Pro forma:',
+    'pfSi':      'Yes',
+    'pfNo':      'No',
+    'dataem':    'Issue date:',
+    'secLoc':    'LANDLORD DETAILS (Owner)',
+    'secCond':   'TENANT DETAILS (Guest)',
+    'secImm':    'PROPERTY DETAILS',
+    'secSog':    'STAY DETAILS',
+    'secImp':    'AMOUNT DETAILS',
+    'secPag':    'PAYMENT METHOD',
+    'nc1':       'Full name:',
+    'cf1':       'Tax code:',
+    'ind1':      'Address:',
+    'nc2':       'Full name:',
+    'cf2':       'Tax code:',
+    'opt':       '(optional)',
+    'indres':    'Residential address:',
+    'indimm':    'Property address:',
+    'comune':    'City:',
+    'prov':      'Prov:',
+    'cap':       'ZIP:',
+    'datapren':  'Booking date:',
+    'dataarr':   'Check-in date:',
+    'datapart':  'Check-out date:',
+    'notti':     'Nights:',
+    'noteLabel': 'Notes:',
+    'totale':    'TOTAL RECEIVED:',
+    'acconto':   'Deposit',
+    'saldo':     'Balance',
+    'contanti':  'Cash',
+    'bonifico':  'Bank transfer',
+    'rifLabel':  'Notes:',
+    'stampa':    'Print / Save PDF',
+    'wa':        '📱 Send image via WhatsApp',
+    'export':    'Export JSON',
+    'import':    'Import JSON',
+    'azzera':    'Clear fields',
+  },
+  fr: {
+    'titolo':    'REÇU DE LOCATION COURTE DURÉE',
+    'sottotitolo': 'Art. 4 D.L. 50/2017 – Locations touristiques de courte durée',
+    'nric':      'N° Reçu :',
+    'proforma':  'Pro forma :',
+    'pfSi':      'Oui',
+    'pfNo':      'Non',
+    'dataem':    "Date d'émission :",
+    'secLoc':    'DONNÉES DU BAILLEUR (Propriétaire)',
+    'secCond':   'DONNÉES DU LOCATAIRE (Hôte)',
+    'secImm':    'DONNÉES DU BIEN IMMOBILIER',
+    'secSog':    'DÉTAILS DU SÉJOUR',
+    'secImp':    'DÉTAIL DES MONTANTS',
+    'secPag':    'MODE DE PAIEMENT',
+    'nc1':       'Nom et prénom :',
+    'cf1':       'Code fiscal :',
+    'ind1':      'Adresse :',
+    'nc2':       'Nom et prénom :',
+    'cf2':       'Code fiscal :',
+    'opt':       '(facultatif)',
+    'indres':    'Adresse de résidence :',
+    'indimm':    'Adresse du bien :',
+    'comune':    'Commune :',
+    'prov':      'Prov. :',
+    'cap':       'Code postal :',
+    'datapren':  'Date de réservation :',
+    'dataarr':   "Date d'arrivée :",
+    'datapart':  'Date de départ :',
+    'notti':     'Nuitées :',
+    'noteLabel': 'Notes :',
+    'totale':    'TOTAL REÇU :',
+    'acconto':   'Acompte',
+    'saldo':     'Solde',
+    'contanti':  'Espèces',
+    'bonifico':  'Virement bancaire',
+    'rifLabel':  'Notes :',
+    'stampa':    'Imprimer / Enregistrer PDF',
+    'wa':        '📱 Envoyer image via WhatsApp',
+    'export':    'Exporter JSON',
+    'import':    'Importer JSON',
+    'azzera':    'Effacer les champs',
+  }
+};
+
+const STORAGE_KEY = 'ricevutaLocazione_v1';
+const CAMPI_TESTO = ['nRicevuta','dataEmissione','condNome','condIndirizzo',
+                     'dataPrenotazione','dataArrivo','dataPartenza','notti',
+                     'totale'];
+const CAMPI_CHECK = ['chkAcconto','chkSaldo','chkContanti','chkBonifico'];
+// Campi note multilingua: ognuno ha tre versioni (it/en/fr) salvate separatamente
+const CAMPI_NOTE_LANG = ['noteSoggiorno','rifPagamento'];
+const noteData = { noteSoggiorno: {it:'',en:'',fr:''}, rifPagamento: {it:'',en:'',fr:''} };
+let langCorrente = 'it';
+
+function setLang(lang) {
+  // Prima salva il contenuto corrente delle note nella lingua precedente
+  CAMPI_NOTE_LANG.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) noteData[id][langCorrente] = el.value;
+  });
+  langCorrente = lang;
+  // Poi carica le note della nuova lingua nei textarea
+  CAMPI_NOTE_LANG.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = noteData[id][lang] || '';
+  });
+  const T = TESTI[lang];
+  Object.keys(T).forEach(chiave => {
+    const el = document.getElementById('t-' + chiave);
+    if (el) el.textContent = T[chiave];
+  });
+  document.getElementById('btnIt').classList.toggle('attivo', lang === 'it');
+  document.getElementById('btnEn').classList.toggle('attivo', lang === 'en');
+  document.getElementById('btnFr').classList.toggle('attivo', lang === 'fr');
+  const titoli = { it: 'Ricevuta Locazione Breve', en: 'Short-Term Rental Receipt', fr: 'Reçu de Location Courte Durée' };
+  document.title = titoli[lang] + ' – DE FILIPPO GRAZIA';
+  salvaForm();
+  if (typeof popolaDocumentoStampa === 'function') popolaDocumentoStampa();
+}
+
+function sincronizzaNoteCorrenti() {
+  CAMPI_NOTE_LANG.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) noteData[id][langCorrente] = el.value;
+  });
+}
+
+function salvaForm() {
+  sincronizzaNoteCorrenti();
+  const dati = { lang: langCorrente };
+  CAMPI_TESTO.forEach(id => { const el = document.getElementById(id); if (el) dati[id] = el.value; });
+  CAMPI_CHECK.forEach(id => { const el = document.getElementById(id); if (el) dati[id] = el.checked; });
+  CAMPI_NOTE_LANG.forEach(id => { dati[id] = { ...noteData[id] }; });
+  dati.proforma = document.getElementById('pfSi').checked ? 'si' : 'no';
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(dati)); } catch(e) {}
+}
+
+function caricaForm() {
+  let dati;
+  try { dati = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { dati = {}; }
+  if (!dati || typeof dati !== 'object') return;
+  // La data di emissione NON viene ricaricata da localStorage: di default è sempre oggi
+  CAMPI_TESTO.forEach(id => {
+    if (id === 'dataEmissione') return;
+    const el = document.getElementById(id);
+    if (el && dati[id] !== undefined) el.value = dati[id];
+  });
+  CAMPI_CHECK.forEach(id => { const el = document.getElementById(id); if (el && dati[id] !== undefined) el.checked = !!dati[id]; });
+  // Note multilingua: supporta anche il vecchio formato (stringa singola → finisce in IT)
+  CAMPI_NOTE_LANG.forEach(id => {
+    const v = dati[id];
+    if (v && typeof v === 'object') {
+      noteData[id] = { it: v.it || '', en: v.en || '', fr: v.fr || '' };
+    } else if (typeof v === 'string') {
+      noteData[id] = { it: v, en: '', fr: '' };
+    }
+  });
+  if (dati.proforma === 'si') document.getElementById('pfSi').checked = true;
+  else if (dati.proforma === 'no') document.getElementById('pfNo').checked = true;
+  const langDaCaricare = (dati.lang && TESTI[dati.lang]) ? dati.lang : 'it';
+  // Allinea langCorrente e textarea PRIMA di setLang, così lo swap interno è idempotente
+  langCorrente = langDaCaricare;
+  CAMPI_NOTE_LANG.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = noteData[id][langDaCaricare] || '';
+  });
+  setLang(langDaCaricare);
+}
+
+function calcolaNotti() {
+  const a = document.getElementById('dataArrivo').value;
+  const p = document.getElementById('dataPartenza').value;
+  const campo = document.getElementById('notti');
+  if (a && p) {
+    const diff = Math.round((new Date(p) - new Date(a)) / 86400000);
+    campo.value = diff > 0 ? diff : '';
+  } else {
+    campo.value = '';
+  }
+}
+
+function azzeraForm() {
+  CAMPI_TESTO.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  CAMPI_CHECK.forEach(id => { const el = document.getElementById(id); if (el) el.checked = false; });
+  CAMPI_NOTE_LANG.forEach(id => {
+    noteData[id] = { it:'', en:'', fr:'' };
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('pfNo').checked = true;
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+  document.getElementById('dataEmissione').value = new Date().toISOString().split('T')[0];
+}
+
+function esportaJSON() {
+  sincronizzaNoteCorrenti();
+  const dati = { lang: langCorrente };
+  CAMPI_TESTO.forEach(id => { const el = document.getElementById(id); if (el) dati[id] = el.value; });
+  CAMPI_CHECK.forEach(id => { const el = document.getElementById(id); if (el) dati[id] = el.checked; });
+  CAMPI_NOTE_LANG.forEach(id => { dati[id] = { ...noteData[id] }; });
+  dati.proforma = document.getElementById('pfSi').checked ? 'si' : 'no';
+  const nome = (dati.condNome || 'ricevuta').trim().replace(/[^a-zA-Z0-9]+/g, '_');
+  const data = (dati.dataArrivo || dati.dataEmissione || new Date().toISOString().split('T')[0]);
+  const filename = `Ricevuta_${nome}_${data}.json`;
+  const blob = new Blob([JSON.stringify(dati, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
+}
+
+function importaJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const dati = JSON.parse(e.target.result);
+      if (!dati || typeof dati !== 'object') throw new Error('Formato non valido');
+      CAMPI_TESTO.forEach(id => { const el = document.getElementById(id); if (el && dati[id] !== undefined) el.value = dati[id]; });
+      CAMPI_CHECK.forEach(id => { const el = document.getElementById(id); if (el) el.checked = dati[id] !== undefined ? !!dati[id] : false; });
+      // Note multilingua: supporta sia oggetto {it,en,fr} sia stringa singola (legacy)
+      CAMPI_NOTE_LANG.forEach(id => {
+        const v = dati[id];
+        if (v && typeof v === 'object') {
+          noteData[id] = { it: v.it || '', en: v.en || '', fr: v.fr || '' };
+        } else if (typeof v === 'string') {
+          noteData[id] = { it: v, en: '', fr: '' };
+        } else {
+          noteData[id] = { it:'', en:'', fr:'' };
+        }
+      });
+      if (dati.proforma === 'si') document.getElementById('pfSi').checked = true;
+      else document.getElementById('pfNo').checked = true;
+      const langImp = (dati.lang && TESTI[dati.lang]) ? dati.lang : langCorrente;
+      langCorrente = langImp;
+      CAMPI_NOTE_LANG.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = noteData[id][langImp] || '';
+      });
+      setLang(langImp);
+      salvaForm();
+    } catch(err) {
+      alert('Errore: file JSON non valido.\n\n' + err.message);
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// === DOCUMENTO PER STAMPA / PDF ===
+const ETICHETTE_DOC = {
+  it: { titoloPF: 'RICEVUTA PRO FORMA', luogo: 'Milazzo', ricN: 'N. Ricevuta',
+        totale: 'TOTALE RICEVUTO', totalePF: 'TOTALE DA RICEVERE',
+        modalita: 'Modalità', noteSog: 'Note',
+        notePag: 'Note',
+        footer: "Documento emesso ai sensi dell'art. 4 D.L. 50/2017 — Conservare per 5 anni ai fini fiscali" },
+  en: { titoloPF: 'PRO FORMA RECEIPT', luogo: 'Milazzo', ricN: 'Receipt No.',
+        totale: 'TOTAL RECEIVED', totalePF: 'TOTAL DUE',
+        modalita: 'Method', noteSog: 'Notes',
+        notePag: 'Notes',
+        footer: 'Document issued pursuant to art. 4 Italian Decree-Law 50/2017 — Keep for 5 years for tax purposes' },
+  fr: { titoloPF: 'REÇU PRO FORMA', luogo: 'Milazzo', ricN: 'N° Reçu',
+        totale: 'TOTAL REÇU', totalePF: 'TOTAL À RECEVOIR',
+        modalita: 'Mode', noteSog: 'Notes',
+        notePag: 'Notes',
+        footer: "Document émis conformément à l'art. 4 D.L. 50/2017 — Conserver 5 ans à des fins fiscales" }
+};
+
+function escHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function fmtData(iso) {
+  if (!iso) return '';
+  const m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : iso;
+}
+
+function val(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+function rigaDoc(label, valore) {
+  if (!valore) return '';
+  return `<div class="doc-riga"><span class="doc-label">${escHtml(label)}</span><span class="doc-valore">${escHtml(valore).replace(/\n/g, '<br>')}</span></div>`;
+}
+
+function popolaDocumentoStampa() {
+  sincronizzaNoteCorrenti();
+  const lang = document.getElementById('btnEn').classList.contains('attivo') ? 'en'
+             : document.getElementById('btnFr').classList.contains('attivo') ? 'fr' : 'it';
+  const T = TESTI[lang];
+  const E = ETICHETTE_DOC[lang];
+  const proforma = document.getElementById('pfSi').checked;
+  const noteSog = (noteData.noteSoggiorno && noteData.noteSoggiorno[lang]) || '';
+  const noteRif = (noteData.rifPagamento && noteData.rifPagamento[lang]) || '';
+
+  const titolo = proforma ? E.titoloPF : T.titolo;
+  const dataEm = fmtData(val('dataEmissione')) || fmtData(new Date().toISOString().split('T')[0]);
+  const nRic = val('nRicevuta');
+
+  const locatore = rigaDoc(T.nc1.replace(/:$/, ''), 'DE FILIPPO GRAZIA')
+                 + rigaDoc(T.cf1.replace(/:$/, ''), 'DFLGRZ47P70F158H')
+                 + rigaDoc(T.ind1.replace(/:$/, ''), 'Piazza Nastasi n. 34 — 98057 Milazzo (ME) Italia');
+
+  const conduttore = rigaDoc(T.nc2.replace(/:$/, ''), val('condNome'))
+                   + rigaDoc(T.indres.replace(/:$/, ''), val('condIndirizzo'));
+
+  const immobile = rigaDoc(T.indimm.replace(/:$/, ''), 'Via Cristoforo Colombo n. 7 — 98057 Milazzo (ME) Italia')
+                 + rigaDoc(T.comune.replace(/:$/, ''), 'Milazzo (ME) — 98057');
+
+  const soggiorno = rigaDoc(T.datapren.replace(/:$/, ''), fmtData(val('dataPrenotazione')))
+                  + rigaDoc(T.dataarr.replace(/:$/, ''), fmtData(val('dataArrivo')))
+                  + rigaDoc(T.datapart.replace(/:$/, ''), fmtData(val('dataPartenza')))
+                  + rigaDoc(T.notti.replace(/:$/, ''), val('notti'))
+                  + rigaDoc(E.noteSog, noteSog);
+
+  const totale = val('totale') || '0,00';
+
+  const modList = [];
+  if (document.getElementById('chkContanti').checked) modList.push(T.contanti);
+  if (document.getElementById('chkBonifico').checked) modList.push(T.bonifico);
+  const tipoList = [];
+  if (document.getElementById('chkAcconto').checked) tipoList.push(T.acconto);
+  if (document.getElementById('chkSaldo').checked) tipoList.push(T.saldo);
+  const pagStr = [...modList, ...tipoList].join(' — ');
+  const notePag = noteRif;
+
+  const html = `
+    <div class="doc-titolo">${escHtml(titolo)}</div>
+    <div class="doc-sottotitolo">${escHtml(T.sottotitolo)}</div>
+    <div class="doc-meta">
+      ${proforma
+        ? `<span>${escHtml(E.luogo)}, ${escHtml(dataEm)}</span><span></span>`
+        : `<span><strong>${escHtml(E.ricN)}</strong> ${escHtml(nRic) || '—'}</span><span>${escHtml(E.luogo)}, ${escHtml(dataEm)}</span>`}
+    </div>
+    <div class="doc-sezione">
+      <h2>${escHtml(T.secLoc)}</h2>${locatore}
+    </div>
+    ${conduttore.trim() ? `<div class="doc-sezione"><h2>${escHtml(T.secCond)}</h2>${conduttore}</div>` : ''}
+    <div class="doc-sezione">
+      <h2>${escHtml(T.secImm)}</h2>${immobile}
+    </div>
+    ${soggiorno.trim() ? `<div class="doc-sezione"><h2>${escHtml(T.secSog)}</h2>${soggiorno}</div>` : ''}
+    <div class="doc-totale">
+      <span>${escHtml(proforma ? E.totalePF : E.totale)}</span>
+      <span class="doc-importo">€ ${escHtml(totale)}</span>
+    </div>
+    ${pagStr ? `<div class="doc-pag"><span class="doc-label">${escHtml(E.modalita)}</span><span class="doc-valore">${escHtml(pagStr)}</span></div>` : ''}
+    ${notePag ? `<div class="doc-pag"><span class="doc-label">${escHtml(E.notePag)}</span><span class="doc-valore">${escHtml(notePag).replace(/\n/g, '<br>')}</span></div>` : ''}
+    <div class="doc-footer">${escHtml(E.footer)}</div>
+  `;
+  document.getElementById('documentoStampa').innerHTML = html;
+}
+
+window.addEventListener('beforeprint', popolaDocumentoStampa);
+
+// === IMMAGINE RICEVUTA + INVIO WHATSAPP ===
+const MSG_WA_FALLBACK = {
+  it: "L'immagine della ricevuta è stata scaricata.\n\nApri WhatsApp, scegli il contatto e allega l'immagine appena scaricata.",
+  en: "The receipt image has been downloaded.\n\nOpen WhatsApp, choose the contact and attach the downloaded image.",
+  fr: "L'image du reçu a été téléchargée.\n\nOuvrez WhatsApp, choisissez le contact et joignez l'image téléchargée."
+};
+
+function testoACapo(ctx, testo, x, y, maxW, lh) {
+  String(testo).split('\n').forEach(par => {
+    let riga = '';
+    par.split(' ').forEach(parola => {
+      const prova = riga ? riga + ' ' + parola : parola;
+      if (ctx.measureText(prova).width > maxW && riga) {
+        ctx.fillText(riga, x, y); y += lh; riga = parola;
+      } else {
+        riga = prova;
+      }
+    });
+    ctx.fillText(riga, x, y); y += lh;
+  });
+  return y;
+}
+
+function disegnaRicevuta() {
+  sincronizzaNoteCorrenti();
+  const lang = langCorrente;
+  const T = TESTI[lang];
+  const E = ETICHETTE_DOC[lang];
+  const proforma = document.getElementById('pfSi').checked;
+  const noteSog = (noteData.noteSoggiorno && noteData.noteSoggiorno[lang]) || '';
+  const noteRif = (noteData.rifPagamento && noteData.rifPagamento[lang]) || '';
+  const titolo = proforma ? E.titoloPF : T.titolo;
+  const dataEm = fmtData(val('dataEmissione')) || fmtData(new Date().toISOString().split('T')[0]);
+
+  const W = 1240, MX = 90, LBL = 320, FONT = '"Segoe UI", Arial, sans-serif';
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = 3400;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, cv.height);
+  let y = 120;
+
+  // Titolo e sottotitolo
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#000'; ctx.font = '700 44px ' + FONT;
+  ctx.fillText(titolo, W / 2, y); y += 44;
+  ctx.fillStyle = '#555'; ctx.font = '23px ' + FONT;
+  ctx.fillText(T.sottotitolo, W / 2, y); y += 52;
+  ctx.textAlign = 'left';
+
+  // Riga meta (n. ricevuta / luogo e data) tra due linee
+  ctx.strokeStyle = '#888'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
+  y += 44;
+  ctx.fillStyle = '#000';
+  if (proforma) {
+    ctx.font = '25px ' + FONT;
+    ctx.fillText(E.luogo + ', ' + dataEm, MX, y);
+  } else {
+    ctx.font = '600 25px ' + FONT;
+    ctx.fillText(E.ricN + '  ' + (val('nRicevuta') || '—'), MX, y);
+    ctx.font = '25px ' + FONT; ctx.textAlign = 'right';
+    ctx.fillText(E.luogo + ', ' + dataEm, W - MX, y);
+    ctx.textAlign = 'left';
+  }
+  y += 26;
+  ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
+  y += 66;
+
+  function sezione(titoloSez, righe) {
+    const visibili = righe.filter(r => r[1]);
+    if (!visibili.length) return;
+    ctx.fillStyle = '#555'; ctx.font = '600 21px ' + FONT;
+    ctx.fillText(String(titoloSez).toUpperCase(), MX, y);
+    y += 12;
+    ctx.strokeStyle = '#bbb'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
+    y += 40;
+    visibili.forEach(([etich, valore]) => {
+      ctx.fillStyle = '#666'; ctx.font = '24px ' + FONT;
+      ctx.fillText(String(etich).replace(/\s*:$/, ''), MX, y);
+      ctx.fillStyle = '#000'; ctx.font = '24px ' + FONT;
+      y = testoACapo(ctx, valore, MX + LBL, y, W - MX * 2 - LBL, 36);
+    });
+    y += 28;
+  }
+
+  sezione(T.secLoc, [
+    [T.nc1, 'DE FILIPPO GRAZIA'],
+    [T.cf1, 'DFLGRZ47P70F158H'],
+    [T.ind1, 'Piazza Nastasi n. 34 — 98057 Milazzo (ME) Italia']
+  ]);
+  sezione(T.secCond, [
+    [T.nc2, val('condNome')],
+    [T.indres, val('condIndirizzo')]
+  ]);
+  sezione(T.secImm, [
+    [T.indimm, 'Via Cristoforo Colombo n. 7 — 98057 Milazzo (ME) Italia'],
+    [T.comune, 'Milazzo (ME) — 98057']
+  ]);
+  sezione(T.secSog, [
+    [T.datapren, fmtData(val('dataPrenotazione'))],
+    [T.dataarr, fmtData(val('dataArrivo'))],
+    [T.datapart, fmtData(val('dataPartenza'))],
+    [T.notti, val('notti')],
+    [E.noteSog, noteSog]
+  ]);
+
+  // Totale tra due linee spesse
+  y += 6;
+  ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
+  y += 60;
+  ctx.fillStyle = '#000'; ctx.font = '700 32px ' + FONT;
+  ctx.fillText(proforma ? E.totalePF : E.totale, MX, y);
+  ctx.textAlign = 'right'; ctx.font = '700 36px ' + FONT;
+  ctx.fillText('€ ' + (val('totale') || '0,00'), W - MX, y);
+  ctx.textAlign = 'left';
+  y += 36;
+  ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
+  y += 64;
+
+  // Pagamento
+  const modList = [];
+  if (document.getElementById('chkContanti').checked) modList.push(T.contanti);
+  if (document.getElementById('chkBonifico').checked) modList.push(T.bonifico);
+  if (document.getElementById('chkAcconto').checked) modList.push(T.acconto);
+  if (document.getElementById('chkSaldo').checked) modList.push(T.saldo);
+  const pagStr = modList.join(' — ');
+  ctx.font = '24px ' + FONT;
+  if (pagStr) {
+    ctx.fillStyle = '#666'; ctx.fillText(E.modalita, MX, y);
+    ctx.fillStyle = '#000';
+    y = testoACapo(ctx, pagStr, MX + LBL, y, W - MX * 2 - LBL, 36);
+  }
+  if (noteRif) {
+    ctx.fillStyle = '#666'; ctx.fillText(E.notePag, MX, y);
+    ctx.fillStyle = '#000';
+    y = testoACapo(ctx, noteRif, MX + LBL, y, W - MX * 2 - LBL, 36);
+  }
+
+  // Footer
+  y += 40;
+  ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
+  y += 44;
+  ctx.fillStyle = '#777'; ctx.font = 'italic 19px ' + FONT;
+  ctx.textAlign = 'center';
+  y = testoACapo(ctx, E.footer, W / 2, y, W - MX * 2, 28);
+  ctx.textAlign = 'left';
+
+  // Ritaglio all'altezza effettiva del contenuto + cornice
+  const H = Math.min(cv.height, Math.round(y + 40));
+  const out = document.createElement('canvas');
+  out.width = W; out.height = H;
+  const octx = out.getContext('2d');
+  octx.drawImage(cv, 0, 0);
+  octx.strokeStyle = '#d0d0d0'; octx.lineWidth = 2;
+  octx.strokeRect(1, 1, W - 2, H - 2);
+  return out;
+}
+
+async function inviaImmagineWA() {
+  const cv = disegnaRicevuta();
+  const nome = (val('condNome') || 'ricevuta').trim().replace(/[^a-zA-Z0-9]+/g, '_');
+  const dataF = val('dataArrivo') || val('dataEmissione') || new Date().toISOString().split('T')[0];
+  const filename = `Ricevuta_${nome}_${dataF}.png`;
+  const blob = await new Promise(res => cv.toBlob(res, 'image/png'));
+  if (!blob) { alert('Errore nella creazione dell\'immagine.'); return; }
+  const file = new File([blob], filename, { type: 'image/png' });
+  // Su telefono/tablet: menu di condivisione nativo (WhatsApp → scelta contatto)
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: filename });
+      return;
+    } catch (err) {
+      if (err && err.name === 'AbortError') return; // condivisione annullata dall'utente
+      // altrimenti prosegue con il download di riserva
+    }
+  }
+  // Riserva (PC o browser senza condivisione): scarica il PNG
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
+  alert(MSG_WA_FALLBACK[langCorrente] || MSG_WA_FALLBACK.it);
+}
+
+// Init: data emissione = oggi (se non già salvata) e ripristino dati
+document.getElementById('dataEmissione').value = new Date().toISOString().split('T')[0];
+caricaForm();
+popolaDocumentoStampa();
+
+// Auto-salvataggio su ogni modifica
+document.querySelectorAll('input, textarea').forEach(el => {
+  el.addEventListener('input', salvaForm);
+  el.addEventListener('change', salvaForm);
+});
+</script>
+</body>
+</html>
