@@ -81,11 +81,6 @@
     flex-wrap: wrap;
   }
   .riga-num .etichetta { font-size: 0.88rem; color: var(--testo2); white-space: nowrap; }
-  .riga-num input[type="text"] {
-    width: 130px; padding: 5px 8px;
-    border: 1px solid var(--bordo); border-radius: 2px;
-    background: #fff; font-size: 0.88rem; color: var(--testo);
-  }
   .pf-group { display: flex; align-items: center; gap: 14px; margin-left: auto; flex-wrap: wrap; }
   .pf-label { font-size: 0.88rem; color: var(--testo2); }
   .radio-item { display: flex; align-items: center; gap: 5px; font-size: 0.88rem; color: var(--testo2); cursor: pointer; }
@@ -151,12 +146,8 @@
     background: #fff; font-size: 0.95rem; font-weight: 600; color: var(--testo);
   }
   .importo-box input:focus { outline: none; }
-  .acc-sal { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-  .check-item { display: flex; align-items: center; gap: 6px; font-size: 0.88rem; color: var(--testo2); cursor: pointer; }
-  .check-item input[type="checkbox"] { accent-color: var(--accent); cursor: pointer; }
 
   /* PAGAMENTO */
-  .pag-riga { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
   .rif-label { font-size: 0.88rem; color: var(--testo2); display: block; margin-bottom: 6px; }
   textarea.rif {
     width: 100%; min-height: 60px; padding: 8px 10px;
@@ -304,10 +295,8 @@
     <div class="sottotitolo" id="t-sottotitolo">Art. 4 D.L. 50/2017 – Locazioni brevi a fini turistici</div>
   </div>
 
-  <!-- RIGA N. RICEVUTA -->
+  <!-- RIGA PRO FORMA / DATA -->
   <div class="riga-num">
-    <span class="etichetta" id="t-nric">N. Ricevuta:</span>
-    <input type="text" id="nRicevuta" maxlength="30">
     <div class="pf-group">
       <span class="pf-label" id="t-proforma">Pro forma:</span>
       <label class="radio-item">
@@ -418,32 +407,12 @@
         <span class="euro">€</span>
         <input type="text" id="totale" placeholder="0,00">
       </div>
-      <div class="acc-sal">
-        <label class="check-item">
-          <input type="checkbox" id="chkAcconto">
-          <span id="t-acconto">Acconto</span>
-        </label>
-        <label class="check-item">
-          <input type="checkbox" id="chkSaldo">
-          <span id="t-saldo">Saldo</span>
-        </label>
-      </div>
     </div>
   </div>
 
   <!-- PAGAMENTO -->
   <div class="sezione">
     <div class="sezione-titolo" id="t-secPag">MODALITÀ DI PAGAMENTO</div>
-    <div class="pag-riga">
-      <label class="check-item">
-        <input type="checkbox" id="chkContanti">
-        <span id="t-contanti">Contanti</span>
-      </label>
-      <label class="check-item">
-        <input type="checkbox" id="chkBonifico">
-        <span id="t-bonifico">Bonifico</span>
-      </label>
-    </div>
     <span class="rif-label" id="t-rifLabel">Note:</span>
     <textarea class="rif" id="rifPagamento" rows="3"></textarea>
   </div>
@@ -451,7 +420,6 @@
   <!-- BOTTONI -->
   <div class="btn-bar">
     <button class="btn btn-stampa" onclick="popolaDocumentoStampa(); window.print();" id="t-stampa">Stampa / Salva PDF</button>
-    <button class="btn btn-stampa" onclick="inviaImmagineWA()" id="t-wa">📱 Invia immagine via WA</button>
     <button class="btn btn-azzera" onclick="esportaJSON()" id="t-export">Esporta JSON</button>
     <button class="btn btn-azzera" onclick="document.getElementById('importFile').click()" id="t-import">Importa JSON</button>
     <button class="btn btn-azzera" onclick="azzeraForm()" id="t-azzera">Azzera campi</button>
@@ -468,7 +436,6 @@ const TESTI = {
   it: {
     'titolo':    'RICEVUTA LOCAZIONE BREVE',
     'sottotitolo': 'Art. 4 D.L. 50/2017 – Locazioni brevi a fini turistici',
-    'nric':      'N. Ricevuta:',
     'proforma':  'Pro forma:',
     'pfSi':      'Sì',
     'pfNo':      'No',
@@ -496,13 +463,8 @@ const TESTI = {
     'notti':     'Pernottamenti:',
     'noteLabel': 'Note:',
     'totale':    'TOTALE RICEVUTO:',
-    'acconto':   'Acconto',
-    'saldo':     'Saldo',
-    'contanti':  'Contanti',
-    'bonifico':  'Bonifico',
     'rifLabel':  'Note:',
     'stampa':    'Stampa / Salva PDF',
-    'wa':        '📱 Invia immagine via WA',
     'export':    'Esporta JSON',
     'import':    'Importa JSON',
     'azzera':    'Azzera campi',
@@ -510,7 +472,6 @@ const TESTI = {
   en: {
     'titolo':    'SHORT-TERM RENTAL RECEIPT',
     'sottotitolo': 'Art. 4 Italian Decree-Law 50/2017 – Short-term tourist rentals',
-    'nric':      'Receipt No.:',
     'proforma':  'Pro forma:',
     'pfSi':      'Yes',
     'pfNo':      'No',
@@ -538,13 +499,8 @@ const TESTI = {
     'notti':     'Nights:',
     'noteLabel': 'Notes:',
     'totale':    'TOTAL RECEIVED:',
-    'acconto':   'Deposit',
-    'saldo':     'Balance',
-    'contanti':  'Cash',
-    'bonifico':  'Bank transfer',
     'rifLabel':  'Notes:',
     'stampa':    'Print / Save PDF',
-    'wa':        '📱 Send image via WhatsApp',
     'export':    'Export JSON',
     'import':    'Import JSON',
     'azzera':    'Clear fields',
@@ -552,7 +508,6 @@ const TESTI = {
   fr: {
     'titolo':    'REÇU DE LOCATION COURTE DURÉE',
     'sottotitolo': 'Art. 4 D.L. 50/2017 – Locations touristiques de courte durée',
-    'nric':      'N° Reçu :',
     'proforma':  'Pro forma :',
     'pfSi':      'Oui',
     'pfNo':      'Non',
@@ -580,13 +535,8 @@ const TESTI = {
     'notti':     'Nuitées :',
     'noteLabel': 'Notes :',
     'totale':    'TOTAL REÇU :',
-    'acconto':   'Acompte',
-    'saldo':     'Solde',
-    'contanti':  'Espèces',
-    'bonifico':  'Virement bancaire',
     'rifLabel':  'Notes :',
     'stampa':    'Imprimer / Enregistrer PDF',
-    'wa':        '📱 Envoyer image via WhatsApp',
     'export':    'Exporter JSON',
     'import':    'Importer JSON',
     'azzera':    'Effacer les champs',
@@ -594,10 +544,10 @@ const TESTI = {
 };
 
 const STORAGE_KEY = 'ricevutaLocazione_v1';
-const CAMPI_TESTO = ['nRicevuta','dataEmissione','condNome','condIndirizzo',
+const CAMPI_TESTO = ['dataEmissione','condNome','condIndirizzo',
                      'dataPrenotazione','dataArrivo','dataPartenza','notti',
                      'totale'];
-const CAMPI_CHECK = ['chkAcconto','chkSaldo','chkContanti','chkBonifico'];
+const CAMPI_CHECK = [];
 // Campi note multilingua: ognuno ha tre versioni (it/en/fr) salvate separatamente
 const CAMPI_NOTE_LANG = ['noteSoggiorno','rifPagamento'];
 const noteData = { noteSoggiorno: {it:'',en:'',fr:''}, rifPagamento: {it:'',en:'',fr:''} };
@@ -763,19 +713,19 @@ function importaJSON(event) {
 
 // === DOCUMENTO PER STAMPA / PDF ===
 const ETICHETTE_DOC = {
-  it: { titoloPF: 'RICEVUTA PRO FORMA', luogo: 'Milazzo', ricN: 'N. Ricevuta',
+  it: { titoloPF: 'RICEVUTA PRO FORMA', luogo: 'Milazzo',
         totale: 'TOTALE RICEVUTO', totalePF: 'TOTALE DA RICEVERE',
-        modalita: 'Modalità', noteSog: 'Note',
+        noteSog: 'Note',
         notePag: 'Note',
         footer: "Documento emesso ai sensi dell'art. 4 D.L. 50/2017 — Conservare per 5 anni ai fini fiscali" },
-  en: { titoloPF: 'PRO FORMA RECEIPT', luogo: 'Milazzo', ricN: 'Receipt No.',
+  en: { titoloPF: 'PRO FORMA RECEIPT', luogo: 'Milazzo',
         totale: 'TOTAL RECEIVED', totalePF: 'TOTAL DUE',
-        modalita: 'Method', noteSog: 'Notes',
+        noteSog: 'Notes',
         notePag: 'Notes',
         footer: 'Document issued pursuant to art. 4 Italian Decree-Law 50/2017 — Keep for 5 years for tax purposes' },
-  fr: { titoloPF: 'REÇU PRO FORMA', luogo: 'Milazzo', ricN: 'N° Reçu',
+  fr: { titoloPF: 'REÇU PRO FORMA', luogo: 'Milazzo',
         totale: 'TOTAL REÇU', totalePF: 'TOTAL À RECEVOIR',
-        modalita: 'Mode', noteSog: 'Notes',
+        noteSog: 'Notes',
         notePag: 'Notes',
         footer: "Document émis conformément à l'art. 4 D.L. 50/2017 — Conserver 5 ans à des fins fiscales" }
 };
@@ -809,7 +759,6 @@ function popolaDocumentoStampa() {
 
   const titolo = proforma ? E.titoloPF : T.titolo;
   const dataEm = fmtData(val('dataEmissione')) || fmtData(new Date().toISOString().split('T')[0]);
-  const nRic = val('nRicevuta');
 
   const locatore = rigaDoc(T.nc1.replace(/:$/, ''), 'DE FILIPPO GRAZIA')
                  + rigaDoc(T.cf1.replace(/:$/, ''), 'DFLGRZ47P70F158H')
@@ -829,22 +778,13 @@ function popolaDocumentoStampa() {
 
   const totale = val('totale') || '0,00';
 
-  const modList = [];
-  if (document.getElementById('chkContanti').checked) modList.push(T.contanti);
-  if (document.getElementById('chkBonifico').checked) modList.push(T.bonifico);
-  const tipoList = [];
-  if (document.getElementById('chkAcconto').checked) tipoList.push(T.acconto);
-  if (document.getElementById('chkSaldo').checked) tipoList.push(T.saldo);
-  const pagStr = [...modList, ...tipoList].join(' — ');
   const notePag = noteRif;
 
   const html = `
     <div class="doc-titolo">${escHtml(titolo)}</div>
     <div class="doc-sottotitolo">${escHtml(T.sottotitolo)}</div>
     <div class="doc-meta">
-      ${proforma
-        ? `<span>${escHtml(E.luogo)}, ${escHtml(dataEm)}</span><span></span>`
-        : `<span><strong>${escHtml(E.ricN)}</strong> ${escHtml(nRic) || '—'}</span><span>${escHtml(E.luogo)}, ${escHtml(dataEm)}</span>`}
+      <span>${escHtml(E.luogo)}, ${escHtml(dataEm)}</span><span></span>
     </div>
     <div class="doc-sezione">
       <h2>${escHtml(T.secLoc)}</h2>${locatore}
@@ -858,7 +798,6 @@ function popolaDocumentoStampa() {
       <span>${escHtml(proforma ? E.totalePF : E.totale)}</span>
       <span class="doc-importo">€ ${escHtml(totale)}</span>
     </div>
-    ${pagStr ? `<div class="doc-pag"><span class="doc-label">${escHtml(E.modalita)}</span><span class="doc-valore">${escHtml(pagStr)}</span></div>` : ''}
     ${notePag ? `<div class="doc-pag"><span class="doc-label">${escHtml(E.notePag)}</span><span class="doc-valore">${escHtml(notePag).replace(/\n/g, '<br>')}</span></div>` : ''}
     <div class="doc-footer">${escHtml(E.footer)}</div>
   `;
@@ -866,195 +805,6 @@ function popolaDocumentoStampa() {
 }
 
 window.addEventListener('beforeprint', popolaDocumentoStampa);
-
-// === IMMAGINE RICEVUTA + INVIO WHATSAPP ===
-const MSG_WA_FALLBACK = {
-  it: "L'immagine della ricevuta è stata scaricata.\n\nApri WhatsApp, scegli il contatto e allega l'immagine appena scaricata.",
-  en: "The receipt image has been downloaded.\n\nOpen WhatsApp, choose the contact and attach the downloaded image.",
-  fr: "L'image du reçu a été téléchargée.\n\nOuvrez WhatsApp, choisissez le contact et joignez l'image téléchargée."
-};
-
-function testoACapo(ctx, testo, x, y, maxW, lh) {
-  String(testo).split('\n').forEach(par => {
-    let riga = '';
-    par.split(' ').forEach(parola => {
-      const prova = riga ? riga + ' ' + parola : parola;
-      if (ctx.measureText(prova).width > maxW && riga) {
-        ctx.fillText(riga, x, y); y += lh; riga = parola;
-      } else {
-        riga = prova;
-      }
-    });
-    ctx.fillText(riga, x, y); y += lh;
-  });
-  return y;
-}
-
-function disegnaRicevuta() {
-  sincronizzaNoteCorrenti();
-  const lang = langCorrente;
-  const T = TESTI[lang];
-  const E = ETICHETTE_DOC[lang];
-  const proforma = document.getElementById('pfSi').checked;
-  const noteSog = (noteData.noteSoggiorno && noteData.noteSoggiorno[lang]) || '';
-  const noteRif = (noteData.rifPagamento && noteData.rifPagamento[lang]) || '';
-  const titolo = proforma ? E.titoloPF : T.titolo;
-  const dataEm = fmtData(val('dataEmissione')) || fmtData(new Date().toISOString().split('T')[0]);
-
-  const W = 1240, MX = 90, LBL = 320, FONT = '"Segoe UI", Arial, sans-serif';
-  const cv = document.createElement('canvas');
-  cv.width = W; cv.height = 3400;
-  const ctx = cv.getContext('2d');
-  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, cv.height);
-  let y = 120;
-
-  // Titolo e sottotitolo
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#000'; ctx.font = '700 44px ' + FONT;
-  ctx.fillText(titolo, W / 2, y); y += 44;
-  ctx.fillStyle = '#555'; ctx.font = '23px ' + FONT;
-  ctx.fillText(T.sottotitolo, W / 2, y); y += 52;
-  ctx.textAlign = 'left';
-
-  // Riga meta (n. ricevuta / luogo e data) tra due linee
-  ctx.strokeStyle = '#888'; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
-  y += 44;
-  ctx.fillStyle = '#000';
-  if (proforma) {
-    ctx.font = '25px ' + FONT;
-    ctx.fillText(E.luogo + ', ' + dataEm, MX, y);
-  } else {
-    ctx.font = '600 25px ' + FONT;
-    ctx.fillText(E.ricN + '  ' + (val('nRicevuta') || '—'), MX, y);
-    ctx.font = '25px ' + FONT; ctx.textAlign = 'right';
-    ctx.fillText(E.luogo + ', ' + dataEm, W - MX, y);
-    ctx.textAlign = 'left';
-  }
-  y += 26;
-  ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
-  y += 66;
-
-  function sezione(titoloSez, righe) {
-    const visibili = righe.filter(r => r[1]);
-    if (!visibili.length) return;
-    ctx.fillStyle = '#555'; ctx.font = '600 21px ' + FONT;
-    ctx.fillText(String(titoloSez).toUpperCase(), MX, y);
-    y += 12;
-    ctx.strokeStyle = '#bbb'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
-    y += 40;
-    visibili.forEach(([etich, valore]) => {
-      ctx.fillStyle = '#666'; ctx.font = '24px ' + FONT;
-      ctx.fillText(String(etich).replace(/\s*:$/, ''), MX, y);
-      ctx.fillStyle = '#000'; ctx.font = '24px ' + FONT;
-      y = testoACapo(ctx, valore, MX + LBL, y, W - MX * 2 - LBL, 36);
-    });
-    y += 28;
-  }
-
-  sezione(T.secLoc, [
-    [T.nc1, 'DE FILIPPO GRAZIA'],
-    [T.cf1, 'DFLGRZ47P70F158H'],
-    [T.ind1, 'Piazza Nastasi n. 34 — 98057 Milazzo (ME) Italia']
-  ]);
-  sezione(T.secCond, [
-    [T.nc2, val('condNome')],
-    [T.indres, val('condIndirizzo')]
-  ]);
-  sezione(T.secImm, [
-    [T.indimm, 'Via Cristoforo Colombo n. 7 — 98057 Milazzo (ME) Italia'],
-    [T.comune, 'Milazzo (ME) — 98057']
-  ]);
-  sezione(T.secSog, [
-    [T.datapren, fmtData(val('dataPrenotazione'))],
-    [T.dataarr, fmtData(val('dataArrivo'))],
-    [T.datapart, fmtData(val('dataPartenza'))],
-    [T.notti, val('notti')],
-    [E.noteSog, noteSog]
-  ]);
-
-  // Totale tra due linee spesse
-  y += 6;
-  ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
-  y += 60;
-  ctx.fillStyle = '#000'; ctx.font = '700 32px ' + FONT;
-  ctx.fillText(proforma ? E.totalePF : E.totale, MX, y);
-  ctx.textAlign = 'right'; ctx.font = '700 36px ' + FONT;
-  ctx.fillText('€ ' + (val('totale') || '0,00'), W - MX, y);
-  ctx.textAlign = 'left';
-  y += 36;
-  ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
-  y += 64;
-
-  // Pagamento
-  const modList = [];
-  if (document.getElementById('chkContanti').checked) modList.push(T.contanti);
-  if (document.getElementById('chkBonifico').checked) modList.push(T.bonifico);
-  if (document.getElementById('chkAcconto').checked) modList.push(T.acconto);
-  if (document.getElementById('chkSaldo').checked) modList.push(T.saldo);
-  const pagStr = modList.join(' — ');
-  ctx.font = '24px ' + FONT;
-  if (pagStr) {
-    ctx.fillStyle = '#666'; ctx.fillText(E.modalita, MX, y);
-    ctx.fillStyle = '#000';
-    y = testoACapo(ctx, pagStr, MX + LBL, y, W - MX * 2 - LBL, 36);
-  }
-  if (noteRif) {
-    ctx.fillStyle = '#666'; ctx.fillText(E.notePag, MX, y);
-    ctx.fillStyle = '#000';
-    y = testoACapo(ctx, noteRif, MX + LBL, y, W - MX * 2 - LBL, 36);
-  }
-
-  // Footer
-  y += 40;
-  ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(MX, y); ctx.lineTo(W - MX, y); ctx.stroke();
-  y += 44;
-  ctx.fillStyle = '#777'; ctx.font = 'italic 19px ' + FONT;
-  ctx.textAlign = 'center';
-  y = testoACapo(ctx, E.footer, W / 2, y, W - MX * 2, 28);
-  ctx.textAlign = 'left';
-
-  // Ritaglio all'altezza effettiva del contenuto + cornice
-  const H = Math.min(cv.height, Math.round(y + 40));
-  const out = document.createElement('canvas');
-  out.width = W; out.height = H;
-  const octx = out.getContext('2d');
-  octx.drawImage(cv, 0, 0);
-  octx.strokeStyle = '#d0d0d0'; octx.lineWidth = 2;
-  octx.strokeRect(1, 1, W - 2, H - 2);
-  return out;
-}
-
-async function inviaImmagineWA() {
-  const cv = disegnaRicevuta();
-  const nome = (val('condNome') || 'ricevuta').trim().replace(/[^a-zA-Z0-9]+/g, '_');
-  const dataF = val('dataArrivo') || val('dataEmissione') || new Date().toISOString().split('T')[0];
-  const filename = `Ricevuta_${nome}_${dataF}.png`;
-  const blob = await new Promise(res => cv.toBlob(res, 'image/png'));
-  if (!blob) { alert('Errore nella creazione dell\'immagine.'); return; }
-  const file = new File([blob], filename, { type: 'image/png' });
-  // Su telefono/tablet: menu di condivisione nativo (WhatsApp → scelta contatto)
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    try {
-      await navigator.share({ files: [file], title: filename });
-      return;
-    } catch (err) {
-      if (err && err.name === 'AbortError') return; // condivisione annullata dall'utente
-      // altrimenti prosegue con il download di riserva
-    }
-  }
-  // Riserva (PC o browser senza condivisione): scarica il PNG
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 100);
-  alert(MSG_WA_FALLBACK[langCorrente] || MSG_WA_FALLBACK.it);
-}
 
 // Init: data emissione = oggi (se non già salvata) e ripristino dati
 document.getElementById('dataEmissione').value = new Date().toISOString().split('T')[0];
