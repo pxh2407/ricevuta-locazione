@@ -148,7 +148,6 @@
   .importo-box input:focus { outline: none; }
 
   /* PAGAMENTO */
-  .rif-label { font-size: 0.88rem; color: var(--testo2); display: block; margin-bottom: 6px; }
   textarea.rif {
     width: 100%; min-height: 60px; padding: 8px 10px;
     border: 1px solid var(--bordo); border-radius: 2px;
@@ -392,7 +391,6 @@
         <input type="text" id="notti" class="locked" readonly style="flex:0 0 70px; min-width:0; width:70px; max-width:70px; text-align:center;">
       </div>
       <div class="campo-fullwidth">
-        <span class="rif-label" id="t-noteLabel">Note:</span>
         <textarea id="noteSoggiorno" rows="2"></textarea>
       </div>
     </div>
@@ -412,8 +410,6 @@
 
   <!-- PAGAMENTO -->
   <div class="sezione">
-    <div class="sezione-titolo" id="t-secPag">MODALITÀ DI PAGAMENTO</div>
-    <span class="rif-label" id="t-rifLabel">Note:</span>
     <textarea class="rif" id="rifPagamento" rows="3"></textarea>
   </div>
 
@@ -445,7 +441,6 @@ const TESTI = {
     'secImm':    "DATI DELL'IMMOBILE",
     'secSog':    'DETTAGLI SOGGIORNO',
     'secImp':    'DETTAGLIO IMPORTI',
-    'secPag':    'MODALITÀ DI PAGAMENTO',
     'nc1':       'Nome e Cognome:',
     'cf1':       'Codice Fiscale:',
     'ind1':      'Indirizzo:',
@@ -461,9 +456,7 @@ const TESTI = {
     'dataarr':   'Data arrivo:',
     'datapart':  'Data partenza:',
     'notti':     'Pernottamenti:',
-    'noteLabel': 'Note:',
     'totale':    'TOTALE RICEVUTO:',
-    'rifLabel':  'Note:',
     'stampa':    'Stampa / Salva PDF',
     'export':    'Esporta JSON',
     'import':    'Importa JSON',
@@ -481,7 +474,6 @@ const TESTI = {
     'secImm':    'PROPERTY DETAILS',
     'secSog':    'STAY DETAILS',
     'secImp':    'AMOUNT DETAILS',
-    'secPag':    'PAYMENT METHOD',
     'nc1':       'Full name:',
     'cf1':       'Tax code:',
     'ind1':      'Address:',
@@ -497,9 +489,7 @@ const TESTI = {
     'dataarr':   'Check-in date:',
     'datapart':  'Check-out date:',
     'notti':     'Nights:',
-    'noteLabel': 'Notes:',
     'totale':    'TOTAL RECEIVED:',
-    'rifLabel':  'Notes:',
     'stampa':    'Print / Save PDF',
     'export':    'Export JSON',
     'import':    'Import JSON',
@@ -517,7 +507,6 @@ const TESTI = {
     'secImm':    'DONNÉES DU BIEN IMMOBILIER',
     'secSog':    'DÉTAILS DU SÉJOUR',
     'secImp':    'DÉTAIL DES MONTANTS',
-    'secPag':    'MODE DE PAIEMENT',
     'nc1':       'Nom et prénom :',
     'cf1':       'Code fiscal :',
     'ind1':      'Adresse :',
@@ -533,9 +522,7 @@ const TESTI = {
     'dataarr':   "Date d'arrivée :",
     'datapart':  'Date de départ :',
     'notti':     'Nuitées :',
-    'noteLabel': 'Notes :',
     'totale':    'TOTAL REÇU :',
-    'rifLabel':  'Notes :',
     'stampa':    'Imprimer / Enregistrer PDF',
     'export':    'Exporter JSON',
     'import':    'Importer JSON',
@@ -715,18 +702,12 @@ function importaJSON(event) {
 const ETICHETTE_DOC = {
   it: { titoloPF: 'RICEVUTA PRO FORMA', luogo: 'Milazzo',
         totale: 'TOTALE RICEVUTO', totalePF: 'TOTALE DA RICEVERE',
-        noteSog: 'Note',
-        notePag: 'Note',
         footer: "Documento emesso ai sensi dell'art. 4 D.L. 50/2017 — Conservare per 5 anni ai fini fiscali" },
   en: { titoloPF: 'PRO FORMA RECEIPT', luogo: 'Milazzo',
         totale: 'TOTAL RECEIVED', totalePF: 'TOTAL DUE',
-        noteSog: 'Notes',
-        notePag: 'Notes',
         footer: 'Document issued pursuant to art. 4 Italian Decree-Law 50/2017 — Keep for 5 years for tax purposes' },
   fr: { titoloPF: 'REÇU PRO FORMA', luogo: 'Milazzo',
         totale: 'TOTAL REÇU', totalePF: 'TOTAL À RECEVOIR',
-        noteSog: 'Notes',
-        notePag: 'Notes',
         footer: "Document émis conformément à l'art. 4 D.L. 50/2017 — Conserver 5 ans à des fins fiscales" }
 };
 
@@ -745,6 +726,11 @@ function val(id) { const el = document.getElementById(id); return el ? el.value.
 function rigaDoc(label, valore) {
   if (!valore) return '';
   return `<div class="doc-riga"><span class="doc-label">${escHtml(label)}</span><span class="doc-valore">${escHtml(valore).replace(/\n/g, '<br>')}</span></div>`;
+}
+
+function rigaNota(valore) {
+  if (!valore) return '';
+  return `<div class="doc-riga"><span class="doc-valore">${escHtml(valore).replace(/\n/g, '<br>')}</span></div>`;
 }
 
 function popolaDocumentoStampa() {
@@ -774,7 +760,7 @@ function popolaDocumentoStampa() {
                   + rigaDoc(T.dataarr.replace(/:$/, ''), fmtData(val('dataArrivo')))
                   + rigaDoc(T.datapart.replace(/:$/, ''), fmtData(val('dataPartenza')))
                   + rigaDoc(T.notti.replace(/:$/, ''), val('notti'))
-                  + rigaDoc(E.noteSog, noteSog);
+                  + rigaNota(noteSog);
 
   const totale = val('totale') || '0,00';
 
@@ -798,7 +784,7 @@ function popolaDocumentoStampa() {
       <span>${escHtml(proforma ? E.totalePF : E.totale)}</span>
       <span class="doc-importo">€ ${escHtml(totale)}</span>
     </div>
-    ${notePag ? `<div class="doc-pag"><span class="doc-label">${escHtml(E.notePag)}</span><span class="doc-valore">${escHtml(notePag).replace(/\n/g, '<br>')}</span></div>` : ''}
+    ${rigaNota(notePag)}
     <div class="doc-footer">${escHtml(E.footer)}</div>
   `;
   document.getElementById('documentoStampa').innerHTML = html;
