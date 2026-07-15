@@ -265,6 +265,13 @@
     }
     .doc-pag .doc-label { width: 140pt; color: #666; }
     .doc-pag .doc-valore { flex: 1; color: #000; }
+    .doc-cin {
+      margin-top: 18pt;
+      text-align: center;
+      font-size: 9.5pt;
+      color: #333;
+      letter-spacing: 0.4pt;
+    }
     .doc-footer {
       margin-top: 22pt;
       padding-top: 8pt;
@@ -411,6 +418,11 @@
   <!-- PAGAMENTO -->
   <div class="sezione">
     <textarea class="rif" id="rifPagamento" rows="3"></textarea>
+  </div>
+
+  <!-- CIN / CIR -->
+  <div class="sezione" style="text-align:center; font-size:0.88rem; color:var(--testo2); letter-spacing:0.5px;">
+    CIN: IT083049C2FNPHRA9D &nbsp;—&nbsp; CIR: 19083049C206347
   </div>
 
   <!-- BOTTONI -->
@@ -785,6 +797,7 @@ function popolaDocumentoStampa() {
       <span class="doc-importo">€ ${escHtml(totale)}</span>
     </div>
     ${rigaNota(notePag)}
+    <div class="doc-cin">CIN: IT083049C2FNPHRA9D — CIR: 19083049C206347</div>
     <div class="doc-footer">${escHtml(E.footer)}</div>
   `;
   document.getElementById('documentoStampa').innerHTML = html;
